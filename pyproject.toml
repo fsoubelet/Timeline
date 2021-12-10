@@ -6,6 +6,8 @@ authors = ["Felix Soubelet <felix.soubelet@protonmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+svgwrite = "^1.4.1"
+pendulum = "^2.1.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -17,3 +19,113 @@ mypy = "^0.910"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+# ----- Testing Configuration ----- #
+
+[tool.pytest.ini_options]
+addopts = "--mpl --no-flaky-report --cov-report=xml --cov-report term-missing --cov-config=pyproject.toml --cov=timeline"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["timeline/"]
+
+[tool.coverage.report]
+ignore_errors = true
+precision = 2
+
+# ----- Utilities Configuration ----- #
+
+[tool.isort]
+atomic = true
+ensure_newline_before_comments = true
+filter_files = true
+force_grid_wrap = 0
+force_single_line = false
+include_trailing_comma = true
+known_first_party = "pyhdtoolkit"
+known_third_party = "pytest"
+line_length = 110
+lines_between_types = 1
+multi_line_output = 3
+use_parentheses = true
+
+[tool.black]
+line-length = 110
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | tests/.*/setup.py
+)/
+'''
+
+[tool.pylint]
+[tool.pylint.master]
+jobs="1"    # Auto-detect the number of processors
+ignore-patterns='''
+    \.eggs
+    |\.git
+    |build
+    |dist
+    |conf.py
+'''
+persistent="no"
+load-plugins=""
+limit-inference-results="100"
+suggestion-mode="yes"
+unsafe-load-any-extension="no"
+extension-pkg-whitelist=""
+exit-zero="no"
+from-stdin="no"
+
+[tool.pylint.messages_control]
+disable = [
+    "attribute-defined-outside-init",
+    "bad-continuation",
+    "expression-not-assigned",
+    "invalid-name",
+    "import-error",
+    "logging-format-interpolation",
+    "protected-access",
+    "too-few-public-methods",
+    "too-many-instance-attributes",
+    "format",  # handled by black
+]
+
+[tool.pylint.reports]
+output-format="text"
+msg-template="{path}:{line}:{column}: Pylint: {msg}. [{msg_id}: {symbol}]"
+
+[tool.pylint.basic]
+argument-naming-style="snake_case"
+attr-naming-style="snake_case"
+class-attribute-naming-style="snake_case"
+class-naming-style="PascalCase"
+const-naming-style="UPPER_CASE"
+function-naming-style="snake_case"
+inlinevar-naming-style="snake_case"
+method-naming-style="snake_case"
+module-naming-style="snake_case"
+variable-naming-style="snake_case"
+
+[tool.pylint.design]
+max-args="10"
+max-attributes="10"
+max-locals="15"
+max-public-methods="20"
+max-returns="5"
+
+[tool.pylint.'SIMILARITIES']
+ignore-comments=['yes']
+ignore-docstrings=['yes']
+ignore-imports=['no']
+min-similarity-lines=4
