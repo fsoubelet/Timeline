@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "pytimeline"
 version = "0.2.0"
-description = "A library for creating and cleaning SVG timelines."
+description = "A library for creating clean SVG timelines from JSON."
 authors = ["Felix Soubelet <felix.soubelet@cern.ch>"]
 license = "MIT"
 packages = [{include = "pytimeline"}]
