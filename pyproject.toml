@@ -26,10 +26,10 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-svgwrite = "^1.4.1"
-pendulum = "^2.1.2"
+svgwrite = "^1.4"
+pendulum = "^2.1"
 loguru = "^0.5.3"
-click = "^8.0.3"
+click = "^8.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
