@@ -34,7 +34,7 @@ def main(inputfile: Path, outputdir: Path, logging: str):
     if not outputdir:
         logger.debug("No output directory provided, using input file directory.")
         outputdir = inputfile.parent
-        outputfile = outputdir / "timeline.svg"
+    outputfile = outputdir / "timeline.svg"
 
     timeline = Timeline(filename=inputfile)
     timeline.build()
