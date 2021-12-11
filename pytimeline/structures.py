@@ -67,14 +67,14 @@ class Timeline:
         logger.info("Building timeline")
         y_era = 10  # draw era label and markers at this height
 
-        self.create_main_axis()
-        y_callouts = self.create_callouts()  # keep track of the callouts' heights
+        self._create_main_axis()
+        y_callouts = self._create_callouts()  # keep track of the callouts' heights
         y_axis = y_era + Callout.height - y_callouts  # axis position to avoid overlap with eras
         height = (
             y_axis + self.max_label_height + 4 * self.text_fudge[1]
         )  # height so that eras, callouts, axis & labels just fit
-        self.create_eras(y_era, y_axis, height)
-        self.create_era_axis_labels()
+        self._create_eras(y_era, y_axis, height)
+        self._create_era_axis_labels()
         self.g_axis.translate(0, y_axis)  # translate the axis group and add it to the drawing
         self.drawing.add(self.g_axis)
         self.drawing["height"] = height  # finally set the height on the drawing
@@ -86,7 +86,7 @@ class Timeline:
     def to_string(self) -> str:
         return self.drawing.tostring()
 
-    def create_eras(self, y_era, y_axis, height):
+    def _create_eras(self, y_era, y_axis, height):
         if "eras" not in self.data:
             return
 
@@ -99,7 +99,7 @@ class Timeline:
             logger.debug(f"Creating era '{name}'")
             fill_color = era[3] if len(era) > 3 else Colors.gray
 
-            start_marker, end_marker = self.get_markers(fill_color)
+            start_marker, end_marker = self._get_markers(fill_color)
 
             logger.trace(f"Creating boundary lines")
             percent_width0 = (t0 - self.date0).in_seconds() / self.total_seconds
@@ -136,7 +136,7 @@ class Timeline:
                 )
             )
 
-    def get_markers(self, color: str) -> Tuple[Marker, Marker]:
+    def _get_markers(self, color: str) -> Tuple[Marker, Marker]:
         logger.trace(f"Getting markers for color '{color}'")
         if color in self.markers:
             return self.markers[color]
@@ -152,13 +152,13 @@ class Timeline:
         self.markers[color] = (start_marker, end_marker)
         return start_marker, end_marker
 
-    def create_main_axis(self) -> None:
+    def _create_main_axis(self) -> None:
         logger.info("Drawing main axis line")
         self.g_axis.add(self.drawing.line((0, 0), (self.width, 0), stroke=Colors.black, stroke_width=3))
 
         logger.info("Adding tickmarks")
-        self.add_axis_label(self.start_date, self.start_date.format(DATE_FORMAT), tick=True)
-        self.add_axis_label(self.end_date, self.end_date.format(DATE_FORMAT), tick=True)
+        self._add_axis_label(self.start_date, self.start_date.format(DATE_FORMAT), tick=True)
+        self._add_axis_label(self.end_date, self.end_date.format(DATE_FORMAT), tick=True)
 
         if "num_ticks" in self.data:
             num_ticks = int(self.data["num_ticks"])
@@ -166,9 +166,9 @@ class Timeline:
             seconds = (self.end_date - self.start_date).in_seconds()
             for j in range(1, num_ticks):
                 tickmark_date: DateTime = self.start_date.add(seconds=j * seconds / num_ticks)
-                self.add_axis_label(tickmark_date, tickmark_date.format(DATE_FORMAT), tick=True)
+                self._add_axis_label(tickmark_date, tickmark_date.format(DATE_FORMAT), tick=True)
 
-    def create_era_axis_labels(self) -> None:
+    def _create_era_axis_labels(self) -> None:
         if "eras" not in self.data:
             return
 
@@ -176,10 +176,10 @@ class Timeline:
             logger.trace(f"Creating axis labels for era '{era[0]}'")
             t0 = pendulum.parse(era[1], strict=False)
             t1 = pendulum.parse(era[2], strict=False)
-            self.add_axis_label(t0, t0.format(DATE_FORMAT), tick=False, fill=Colors.black)
-            self.add_axis_label(t1, t1.format(DATE_FORMAT), tick=False, fill=Colors.black)
+            self._add_axis_label(t0, t0.format(DATE_FORMAT), tick=False, fill=Colors.black)
+            self._add_axis_label(t1, t1.format(DATE_FORMAT), tick=False, fill=Colors.black)
 
-    def add_axis_label(self, dt: DateTime, label: str, **kwargs):
+    def _add_axis_label(self, dt: DateTime, label: str, **kwargs):
         logger.trace(f"Adding axis label '{label}'")
         percent_width: float = (dt - self.date0).in_seconds() / self.total_seconds
         if percent_width < 0 or percent_width > 1:
@@ -206,10 +206,10 @@ class Timeline:
                 transform=f"rotate(180, {x:d}, 0)",
             )
         )
-        h = self.get_text_metrics("Helevetica", 6, label)[0] + 2 * dy
+        h = self._get_text_metrics("Helevetica", 6, label)[0] + 2 * dy
         self.max_label_height = max(self.max_label_height, h)
 
-    def create_callouts(self) -> float:
+    def _create_callouts(self) -> float:
         if "callouts" not in self.data:
             return
 
@@ -242,7 +242,7 @@ class Timeline:
             k = 0
             i = len(prev_x) - 1
             left = x - (
-                self.get_text_metrics("Helevetica", 6, event_name)[0] + Callout.width + self.text_fudge[0]
+                self._get_text_metrics("Helevetica", 6, event_name)[0] + Callout.width + self.text_fudge[0]
             )
             while left < prev_x[i] and i >= 0:
                 k = max(k, prev_level[i] + 1)
@@ -266,7 +266,7 @@ class Timeline:
                     text_anchor="end",
                 )
             )
-            self.add_axis_label(event_date, event_date.format(DATE_FORMAT), tick=False, fill=Colors.black)
+            self._add_axis_label(event_date, event_date.format(DATE_FORMAT), tick=False, fill=Colors.black)
             self.g_axis.add(
                 self.drawing.circle((x, 0), r=4, stroke=event_color, stroke_width=1, fill="white")
             )
@@ -274,7 +274,7 @@ class Timeline:
             prev_level.append(k)
         return min_y
 
-    def get_text_metrics(self, family: str, size: int, text: str) -> Tuple[int, int]:
+    def _get_text_metrics(self, family: str, size: int, text: str) -> Tuple[int, int]:
         key = (family, size)
         if key in self.fonts:
             font = self.fonts[key]
