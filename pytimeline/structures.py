@@ -45,7 +45,7 @@ class Timeline:
         self.max_label_height = 0  # max height of all axis labels, used for final height computation
 
         # ----- Drawing ----- #
-        logger.debug("Creating SVG drawing")
+        logger.debug("Preparing SVG drawing object")
         self.drawing = svgwrite.Drawing()
         self.drawing["width"] = self.width
         self.g_axis = self.drawing.g()
@@ -59,7 +59,7 @@ class Timeline:
         self.total_seconds: int = (self.date1 - self.date0).in_seconds()
 
         # ----- Tkinter ----- #
-        logger.debug("Initializing tkinter")
+        logger.debug("Initializing tkinter for fonts")
         self.tk_root = tkinter.Tk()
         self.fonts = {}
 
@@ -80,6 +80,7 @@ class Timeline:
         self.drawing["height"] = height  # finally set the height on the drawing
 
     def save(self, filename: Union[str, Path]) -> None:
+        logger.info(f"Saving timeline to disk at '{filename.absolute()}'")
         self.drawing.saveas(filename)
 
     def to_string(self) -> str:
@@ -89,7 +90,7 @@ class Timeline:
         if "eras" not in self.data:
             return
 
-        logger.debug("Drawing eras")
+        logger.info("Drawing eras")
         markers = {}
         for era in self.data["eras"]:
             name = era[0]
@@ -98,7 +99,6 @@ class Timeline:
             logger.debug(f"Creating era '{name}'")
             fill_color = era[3] if len(era) > 3 else Colors.gray
 
-            logger.trace(f"Getting marker objects for era")
             start_marker, end_marker = self.get_markers(fill_color)
 
             logger.trace(f"Creating boundary lines")
@@ -137,7 +137,7 @@ class Timeline:
             )
 
     def get_markers(self, color: str) -> Tuple[Marker, Marker]:
-        logger.debug(f"Getting markers for color '{color}'")
+        logger.trace(f"Getting markers for color '{color}'")
         if color in self.markers:
             return self.markers[color]
 
@@ -153,16 +153,16 @@ class Timeline:
         return start_marker, end_marker
 
     def create_main_axis(self) -> None:
-        logger.debug("Drawing main axis line")
+        logger.info("Drawing main axis line")
         self.g_axis.add(self.drawing.line((0, 0), (self.width, 0), stroke=Colors.black, stroke_width=3))
 
-        logger.trace("Adding tickmarks")
+        logger.info("Adding tickmarks")
         self.add_axis_label(self.start_date, self.start_date.format(DATE_FORMAT), tick=True)
         self.add_axis_label(self.end_date, self.end_date.format(DATE_FORMAT), tick=True)
 
         if "num_ticks" in self.data:
             num_ticks = int(self.data["num_ticks"])
-            logger.trace("Dividing period in {num_ticks} ticks")
+            logger.trace(f"Dividing period in {num_ticks} ticks")
             seconds = (self.end_date - self.start_date).in_seconds()
             for j in range(1, num_ticks):
                 tickmark_date: DateTime = self.start_date.add(seconds=j * seconds / num_ticks)
@@ -188,13 +188,11 @@ class Timeline:
         dy = 5
         x = int(percent_width * self.width + 0.5)
 
-        logger.trace(f"Adding tickmark")
         add_tick = kwargs.get("tick", True)
         if add_tick:
             stroke = kwargs.get("stroke", Colors.black)
             self.g_axis.add(self.drawing.line((x, -dy), (x, dy), stroke=stroke, stroke_width=2))
 
-        logger.trace(f"Adding label")
         self.g_axis.add(
             self.drawing.text(
                 label,
@@ -215,7 +213,7 @@ class Timeline:
         if "callouts" not in self.data:
             return
 
-        logger.debug("Creating callouts")
+        logger.info("Adding callouts")
         callouts_data: List[str] = self.data["callouts"]
         min_y = float("inf")
         sorted_dates: List[DateTime] = []
@@ -231,7 +229,7 @@ class Timeline:
             inv_callouts[event_date].append((event_name, event_color))
         sorted_dates.sort()
 
-        logger.debug("Adding callouts")  # one by one, making sure they don't overlap
+        # Adding callouts one by one, making sure they don't overlap
         prev_x = [float("-inf")]
         prev_level = [-1]
         for event_date in sorted_dates:
