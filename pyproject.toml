@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "timeline"
+name = "pytimeline"
 version = "0.1.0"
 description = ""
 authors = ["Felix Soubelet <felix.soubelet@protonmail.com>"]
@@ -9,6 +9,7 @@ python = "^3.9"
 svgwrite = "^1.4.1"
 pendulum = "^2.1.2"
 loguru = "^0.5.3"
+click = "^8.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -10,10 +10,10 @@ very old Python 2 script by Jason Reisman.
 :license: MIT, see LICENSE file for more details.
 """
 
-from .timeline import Timeline
+from .structures import Timeline
 
-__title__ = 'timeline'
-__description__ = 'A library for creating and cleaning SVG timelines.'
+__title__ = "pytimeline"
+__description__ = "A library for creating and cleaning SVG timelines."
 __url__ = "https://github.com/fsoubelet/Timeline"
 __version__ = "0.1.0"
 __author__ = "Felix Soubelet"

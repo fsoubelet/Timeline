@@ -12,7 +12,7 @@ from loguru import logger
 from pendulum import DateTime, Duration
 from svgwrite.container import Marker
 
-from timeline.utils import assert_input_validity
+from pytimeline.utils import assert_input_validity
 
 # TODO: document accepted formats (https://pendulum.eustace.io/docs/#string-formatting)
 DATE_FORMAT: str = "MMM DD, YYYY - HH:mmA"
