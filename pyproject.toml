@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytimeline"
-version = "0.2.0"
+version = "0.2.1"
 description = "A library for creating clean SVG timelines from JSON."
 authors = ["Felix Soubelet <felix.soubelet@cern.ch>"]
 license = "MIT"
@@ -23,6 +23,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Visualization",
     "Topic :: Utilities",
 ]
+
+[tool.poetry.scripts]
+pytimeline = 'pytimeline.__main__:main'
 
 [tool.poetry.dependencies]
 python = "^3.9"
