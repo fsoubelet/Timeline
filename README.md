@@ -8,7 +8,10 @@
   <img alt="Simple example" src="examples/timeline.png">
 </p>
 
-Note: This is a rewrite of the old [timeline script](https://github.com/jasonreisman/Timeline) from Jason Reisman and full credits go to him for most of the work.
+
+> [!NOTE]
+> This is a rewrite of the old [timeline script](https://github.com/jasonreisman/Timeline)
+> from Jason Reisman and full credits go to him for most of the work.
 
 ## Install
 
