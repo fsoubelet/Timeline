@@ -2,7 +2,7 @@
     <b>Pytimeline</b>
 </h1>
 
-`pytimeline` is a command line tool for the creating of SVG timelines from JSON.
+`pytimeline` is a command line tool for the creation of SVG timelines from JSON.
 
 <p align="center">
   <img alt="Simple example" src="examples/timeline.png">
@@ -19,7 +19,7 @@ python -m pip install pytimeline
 
 ## Usage
 
-When the package is installed in your activated environment, it can be called through `python -m colorframe`.
+When the package is installed in your activated environment, it can be called through `python -m pytimeline`.
 Detailed usage goes as follows:
 ```bash
 Usage: python -m pytimeline [OPTIONS]
