@@ -80,7 +80,7 @@ class Timeline:
         self.drawing["height"] = height  # finally set the height on the drawing
 
     def save(self, filename: Union[str, Path]) -> None:
-        logger.info(f"Saving timeline to disk at '{filename.absolute()}'")
+        logger.info(f"Saving timeline to disk at '{Path(filename).absolute()}'")
         self.drawing.saveas(filename)
 
     def to_string(self) -> str:
