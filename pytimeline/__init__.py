@@ -10,7 +10,9 @@ very old Python 2 script by Jason Reisman.
 :license: MIT, see LICENSE file for more details.
 """
 
-from .structures import Timeline
+from .structures import Timeline  # noqa: TID252
+
+__all__ = ["Timeline"]
 
 __title__ = "pytimeline"
 __description__ = "A library for creating and cleaning SVG timelines."

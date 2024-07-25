@@ -1,16 +1,17 @@
-import json
-import tkinter
+from __future__ import annotations
 
+import json
+import tkinter as tk
 from pathlib import Path
-from tkinter import font
-from typing import Dict, List, Tuple, Union
+from typing import TYPE_CHECKING, Union
 
 import pendulum
 import svgwrite
-
 from loguru import logger
 from pendulum import DateTime, Duration
-from svgwrite.container import Marker
+
+if TYPE_CHECKING:
+    from svgwrite.container import Marker
 
 from pytimeline.utils import assert_input_validity
 
@@ -30,7 +31,8 @@ class Callout:
 
 
 class Timeline:
-    def __init__(self, filename: Union[str, Path]) -> None:
+    # TODO: remove noqa below once we drop 3.9 and use str | Path as type hint
+    def __init__(self, filename: Union[str, Path]) -> None:  # noqa: UP007
         filename = Path(filename)
         logger.info(f"Loading timeline configuration from '{filename.absolute()}'")
         with filename.open("r") as f:
@@ -38,7 +40,7 @@ class Timeline:
             assert_input_validity(self.data)
 
         # ----- Parameters ----- #
-        self.markers: Dict[str, Tuple[Marker, Marker]] = {}
+        self.markers: dict[str, tuple[Marker, Marker]] = {}
         self.text_fudge = (3, 1.5)
         self.width = self.data["width"]
         self.tick_format = self.data.get("tick_format", DATE_FORMAT)
@@ -60,7 +62,7 @@ class Timeline:
 
         # ----- Tkinter ----- #
         logger.debug("Initializing tkinter for fonts")
-        self.tk_root = tkinter.Tk()
+        self.tk_root = tk.Tk()
         self.fonts = {}
 
     def build(self):
@@ -79,7 +81,8 @@ class Timeline:
         self.drawing.add(self.g_axis)
         self.drawing["height"] = height  # finally set the height on the drawing
 
-    def save(self, filename: Union[str, Path]) -> None:
+    # TODO: remove noqa below once we drop 3.9 and use str | Path as type hint
+    def save(self, filename: Union[str, Path]) -> None:  # noqa: UP007
         logger.info(f"Saving timeline to disk at '{filename.absolute()}'")
         self.drawing.saveas(filename)
 
@@ -91,17 +94,16 @@ class Timeline:
             return
 
         logger.info("Drawing eras")
-        markers = {}
         for era in self.data["eras"]:
             name = era[0]
             t0 = pendulum.parse(era[1], strict=False)
             t1 = pendulum.parse(era[2], strict=False)
             logger.debug(f"Creating era '{name}'")
-            fill_color = era[3] if len(era) > 3 else Colors.gray
+            fill_color = era[3] if len(era) > 3 else Colors.gray  # noqa: PLR2004
 
             start_marker, end_marker = self._get_markers(fill_color)
 
-            logger.trace(f"Creating boundary lines")
+            logger.trace("Creating boundary lines")
             percent_width0 = (t0 - self.date0).in_seconds() / self.total_seconds
             percent_width1 = (t1 - self.date0).in_seconds() / self.total_seconds
             x0 = int(percent_width0 * self.width + 0.5)
@@ -118,7 +120,7 @@ class Timeline:
             line0.dasharray([5, 5])
             line1.dasharray([5, 5])
 
-            logger.trace(f"Creating horizontal arrows and text")
+            logger.trace("Creating horizontal arrows and text")
             harrow = self.drawing.add(
                 self.drawing.line((x0, y_era), (x1, y_era), stroke=fill_color, stroke_width=0.75)
             )
@@ -136,7 +138,7 @@ class Timeline:
                 )
             )
 
-    def _get_markers(self, color: str) -> Tuple[Marker, Marker]:
+    def _get_markers(self, color: str) -> tuple[Marker, Marker]:
         logger.trace(f"Getting markers for color '{color}'")
         if color in self.markers:
             return self.markers[color]
@@ -214,15 +216,15 @@ class Timeline:
             return
 
         logger.info("Adding callouts")
-        callouts_data: List[str] = self.data["callouts"]
+        callouts_data: list[str] = self.data["callouts"]
         min_y = float("inf")
-        sorted_dates: List[DateTime] = []
-        inv_callouts: Dict[DateTime, Tuple[str, str]] = {}  # {date: (name, color)}
+        sorted_dates: list[DateTime] = []
+        inv_callouts: dict[DateTime, tuple[str, str]] = {}  # {date: (name, color)}
 
         for callout in callouts_data:
             event_name: str = callout[0]
             event_date: DateTime = pendulum.parse(callout[1], strict=False)
-            event_color: str = callout[2] if len(callout) > 2 else Colors.black
+            event_color: str = callout[2] if len(callout) > 2 else Colors.black  # noqa: PLR2004
             sorted_dates.append(event_date)
             if event_date not in inv_callouts:
                 inv_callouts[event_date] = []
@@ -274,13 +276,13 @@ class Timeline:
             prev_level.append(k)
         return min_y
 
-    def _get_text_metrics(self, family: str, size: int, text: str) -> Tuple[int, int]:
+    def _get_text_metrics(self, family: str, size: int, text: str) -> tuple[int, int]:
         key = (family, size)
         if key in self.fonts:
             font = self.fonts[key]
         else:
-            font = tkinter.font.Font(self.tk_root, family=family, size=size)
+            font = tk.font.Font(self.tk_root, family=family, size=size)
             self.fonts[key] = font
-        assert font is not None
+        assert font is not None  # noqa: S101
         w, h = (font.measure(text), font.metrics("linespace"))
         return w, h
