@@ -1,12 +1,21 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "pytimeline/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pytimeline"]
+
+[project]
 name = "pytimeline"
-version = "0.2.1"
-description = "A library for creating clean SVG timelines from JSON."
-authors = ["Felix Soubelet <felix.soubelet@cern.ch>"]
-license = "MIT"
-packages = [{include = "pytimeline"}]
 readme = "README.md"
-repository = "https://github.com/fsoubelet/Timeline"
+description = "A library for creating clean SVG timelines from JSON."
+authors = [{name = "Felix Soubelet", email = "felix.soubelet@cern.ch"},]
+license = "MIT"
+dynamic = ["version"]
+requires-python = ">=3.9"
 keywords = ["Timeline", "SVG", "Generator"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -15,50 +24,34 @@ classifiers = [
     "Natural Language :: English",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Scientific/Engineering :: Visualization",
     "Topic :: Utilities",
 ]
 
-[tool.poetry.scripts]
-pytimeline = 'pytimeline.__main__:main'
+dependencies = [
+    "svgwrite >= 1.4",
+    "pendulum >= 2.1",
+    "loguru >= 0.5.3",
+    "click >= 8.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-svgwrite = "^1.4"
-pendulum = "^2.1"
-loguru = "^0.5.3"
-click = "^8.0"
+[project.optional-dependencies]
+dev = [
+    "isort >= 5.10",
+    "black >= 24.0",
+    "ruff >= 0.5",
+]
 
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
-isort = "^5.10.1"
-black = "^21.12b0"
-pylint = "^2.12.2"
-mypy = "^0.910"
+[project.urls]
+homepage = "https://github.com/fsoubelet/Timeline"
+repository = "https://github.com/fsoubelet/Timeline"
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-# ----- Testing Configuration ----- #
-
-[tool.pytest.ini_options]
-addopts = "--mpl --no-flaky-report --cov-report=xml --cov-report term-missing --cov-config=pyproject.toml --cov=timeline"
-testpaths = ["tests"]
-
-[tool.coverage.run]
-source = ["timeline/"]
-
-[tool.coverage.report]
-ignore_errors = true
-precision = 2
-
-# ----- Utilities Configuration ----- #
+# ----- Dev Tools Configuration ----- #
 
 [tool.isort]
 atomic = true
@@ -73,6 +66,7 @@ line_length = 110
 lines_between_types = 1
 multi_line_output = 3
 use_parentheses = true
+profile = "black"
 
 [tool.black]
 line-length = 110
@@ -90,67 +84,12 @@ exclude = '''
   | build
   | dist
   | tests/.*/setup.py
+  | acc-models-lhc
 )/
 '''
 
-[tool.pylint]
-[tool.pylint.master]
-jobs="1"    # Auto-detect the number of processors
-ignore-patterns='''
-    \.eggs
-    |\.git
-    |build
-    |dist
-    |conf.py
-'''
-persistent="no"
-load-plugins=""
-limit-inference-results="100"
-suggestion-mode="yes"
-unsafe-load-any-extension="no"
-extension-pkg-whitelist=""
-exit-zero="no"
-from-stdin="no"
+[tool.ruff]
+line-length = 110
 
-[tool.pylint.messages_control]
-disable = [
-    "attribute-defined-outside-init",
-    "bad-continuation",
-    "expression-not-assigned",
-    "invalid-name",
-    "import-error",
-    "logging-format-interpolation",
-    "protected-access",
-    "too-few-public-methods",
-    "too-many-instance-attributes",
-    "format",  # handled by black
-]
-
-[tool.pylint.reports]
-output-format="text"
-msg-template="{path}:{line}:{column}: Pylint: {msg}. [{msg_id}: {symbol}]"
-
-[tool.pylint.basic]
-argument-naming-style="snake_case"
-attr-naming-style="snake_case"
-class-attribute-naming-style="snake_case"
-class-naming-style="PascalCase"
-const-naming-style="UPPER_CASE"
-function-naming-style="snake_case"
-inlinevar-naming-style="snake_case"
-method-naming-style="snake_case"
-module-naming-style="snake_case"
-variable-naming-style="snake_case"
-
-[tool.pylint.design]
-max-args="10"
-max-attributes="10"
-max-locals="15"
-max-public-methods="20"
-max-returns="5"
-
-[tool.pylint.'SIMILARITIES']
-ignore-comments=['yes']
-ignore-docstrings=['yes']
-ignore-imports=['no']
-min-similarity-lines=4
+[tool.ruff.lint]
+ignore = ["E501"]
