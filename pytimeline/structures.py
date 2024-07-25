@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import json
-import tkinter as tk
+from tkinter import Tk
+from tkinter.font import Font
 from pathlib import Path
 from typing import TYPE_CHECKING, Union
 
@@ -62,7 +63,7 @@ class Timeline:
 
         # ----- Tkinter ----- #
         logger.debug("Initializing tkinter for fonts")
-        self.tk_root = tk.Tk()
+        self.tk_root = Tk()
         self.fonts = {}
 
     def build(self):
@@ -281,7 +282,7 @@ class Timeline:
         if key in self.fonts:
             font = self.fonts[key]
         else:
-            font = tk.font.Font(self.tk_root, family=family, size=size)
+            font = Font(self.tk_root, family=family, size=size)
             self.fonts[key] = font
         assert font is not None  # noqa: S101
         w, h = (font.measure(text), font.metrics("linespace"))
