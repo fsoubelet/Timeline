@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from tkinter import Tk
 from tkinter.font import Font
-from pathlib import Path
 from typing import TYPE_CHECKING, Union
 
 import pendulum
