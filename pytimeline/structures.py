@@ -84,7 +84,7 @@ class Timeline:
 
     # TODO: remove noqa below once we drop 3.9 and use str | Path as type hint
     def save(self, filename: Union[str, Path]) -> None:  # noqa: UP007
-        logger.info(f"Saving timeline to disk at '{filename.absolute()}'")
+        logger.info(f"Saving timeline to disk at '{Path(filename).absolute()}'")
         self.drawing.saveas(filename)
 
     def to_string(self) -> str:
@@ -160,8 +160,8 @@ class Timeline:
         self.g_axis.add(self.drawing.line((0, 0), (self.width, 0), stroke=Colors.black, stroke_width=3))
 
         logger.info("Adding tickmarks")
-        self._add_axis_label(self.start_date, self.start_date.format(DATE_FORMAT), tick=True)
-        self._add_axis_label(self.end_date, self.end_date.format(DATE_FORMAT), tick=True)
+        self._add_axis_label(self.start_date, self.start_date.format(self.tick_format), tick=True)
+        self._add_axis_label(self.end_date, self.end_date.format(self.tick_format), tick=True)
 
         if "num_ticks" in self.data:
             num_ticks = int(self.data["num_ticks"])
@@ -169,7 +169,7 @@ class Timeline:
             seconds = (self.end_date - self.start_date).in_seconds()
             for j in range(1, num_ticks):
                 tickmark_date: DateTime = self.start_date.add(seconds=j * seconds / num_ticks)
-                self._add_axis_label(tickmark_date, tickmark_date.format(DATE_FORMAT), tick=True)
+                self._add_axis_label(tickmark_date, tickmark_date.format(self.tick_format), tick=True)
 
     def _create_era_axis_labels(self) -> None:
         if "eras" not in self.data:
@@ -179,8 +179,8 @@ class Timeline:
             logger.trace(f"Creating axis labels for era '{era[0]}'")
             t0 = pendulum.parse(era[1], strict=False)
             t1 = pendulum.parse(era[2], strict=False)
-            self._add_axis_label(t0, t0.format(DATE_FORMAT), tick=False, fill=Colors.black)
-            self._add_axis_label(t1, t1.format(DATE_FORMAT), tick=False, fill=Colors.black)
+            self._add_axis_label(t0, t0.format(self.tick_format), tick=False, fill=Colors.black)
+            self._add_axis_label(t1, t1.format(self.tick_format), tick=False, fill=Colors.black)
 
     def _add_axis_label(self, dt: DateTime, label: str, **kwargs):
         logger.trace(f"Adding axis label '{label}'")
@@ -269,7 +269,7 @@ class Timeline:
                     text_anchor="end",
                 )
             )
-            self._add_axis_label(event_date, event_date.format(DATE_FORMAT), tick=False, fill=Colors.black)
+            self._add_axis_label(event_date, event_date.format(self.tick_format), tick=False, fill=Colors.black)
             self.g_axis.add(
                 self.drawing.circle((x, 0), r=4, stroke=event_color, stroke_width=1, fill="white")
             )
