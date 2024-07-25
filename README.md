@@ -16,7 +16,7 @@
 
 ## Install
 
-The package is compatible with `Python 3.7+` and can be installed in your current environment with `pip`:
+The package is compatible with `Python 3.9+` and can be installed in your current environment with `pip`:
 ```bash
 python -m pip install pytimeline
 ```
@@ -25,6 +25,7 @@ python -m pip install pytimeline
 
 When the package is installed in your activated environment, it can be called through `python -m pytimeline`.
 Detailed usage goes as follows:
+
 ```bash
 Usage: python -m pytimeline [OPTIONS]
 
@@ -42,6 +43,7 @@ Options:
 The script will parse your input file and export the `SVG` document in the provided output folder or, if not provided, in the same directory as the input file.
 
 One can otherwise import the high-level object from the package and use it directly:
+
 ```python
 from pytimeline import Timeline
 
@@ -63,11 +65,13 @@ The required fields are `width`, `start`, and `end`.
 All other fields are optional.  
 
 **Required:**
+
 * `width` describes the width, in pixels, of the output SVG document, and the height will be determined automatically.
 * `start` is the date/time of the leftmost date/time on the axis.
 * `end` is the date/time of the rightmost date/time on the axis.
 
 **Optional:**
+
 * `num_ticks` contols the number of tickmarks along the axis between the `start` and `end` date/times (inclusive).  If this field is not present, no tickmarks will be generated except for those at the `start` and `end` dates.
 * `tick_format` describes the string format of the tickmarks along the axis. See the [valid formats](https://pendulum.eustace.io/docs/#formatter) for the `pendulum` package.
 
@@ -76,32 +80,41 @@ All other fields are optional.
 #### Callouts
 
 Callouts along the axis are described in the `callouts` list, in which each entry is also a list with two to three string values:
+
 * The first value is the `description` of the callout (e.g., "Pi Day"). It is required.
 * The second value is the `date/time` of the callout (e.g., "3/14/15 9:26am"). It is required.
 * The third value can specify a `color` for the callout, either as a hexcode or a valid SVG color alias. It is optional.
 
 Callout examples:
+
 ```JSON
 ["Ultimate Pi Day", "3/14/15 9:26am"]
 ```
+
 Or, with a custom callout color:
+
 ```JSON
 ["Ultimate Pi Day", "3/14/15 9:26am", "#CD3F85"]
 ```
+
 #### Eras
 
 Eras are highlighted temporal periods and are described in the `eras` list.
 Like the `callouts` list, each entry in the eras list is itself a list with either three or four string values:
+
 * The first value is the `description` of the era (e.g., "Summer"). It is required.
 * The second value is the start `date/time` of the era (e.g., "6/21/15 12am"). It is required.
 * The third value is the end `date/time` of the era (e.g. "9/20/15 11:59pm"). It is required.
 * The fourth value can specify a `color` for the era, either as a hexcode or a valid SVG color alias. It is optional.
 
 Era examples:
+
 ```JSON
 ["Summer 2015", "6/21/15 12am", "9/20/15 11:59pm"]
 ```
+
 Or, with a custom era color:
+
 ```JSON
 ["Summer 2015", "6/21/15 12am", "9/20/15 11:59pm", "Orange"]
 ```
@@ -109,26 +122,27 @@ Or, with a custom era color:
 ## Simple Example
 
 The `JSON` input for the example timeline at the top of this `README` is:
+
 ```json
 {
-	"width" : 750,
-	"start" : "Oct 8 2015",
-	"end" : "Oct 15 2015",	
-	"num_ticks" : 14,
-	"tick_format" : "%b %d, %Y - %I:%M%p",
-	"callouts" : [
-		["ABC easy as 123", "Oct 14, 2015 3pm"],		
-		["Midnight Event A", "12am Oct 10, 2015", "#DD0000"],
-		["Noon Event A", "12pm Oct 10, 2015"],		
-		["5pm Event A", "5pm Oct 10, 2015"],				
-		["Something amazing happening", "Oct 11, 2015"],
-		["Awesome Event B", "Oct 12, 2015", "#DD0000"],
-		["C", "Oct 13, 2015"],
-		["Event E", "Oct 14, 2015"]
-	],
-	"eras" : [
-		["Era 1", "12pm Oct 8, 2015", "3am Oct 12, 2015", "#CD3F85"],
-		["Era 2", "8am Oct 12, 2015", "12am Oct 15, 2015", "#C0C0FF"]
-	]
+    "width" : 750,
+    "start" : "Oct 8 2015",
+    "end" : "Oct 15 2015",
+    "num_ticks" : 14,
+    "tick_format" : "%b %d, %Y - %I:%M%p",
+    "callouts" : [
+        ["ABC easy as 123", "Oct 14, 2015 3pm"],
+        ["Midnight Event A", "12am Oct 10, 2015", "#DD0000"],
+        ["Noon Event A", "12pm Oct 10, 2015"],
+        ["5pm Event A", "5pm Oct 10, 2015"],
+        ["Something amazing happening", "Oct 11, 2015"],
+        ["Awesome Event B", "Oct 12, 2015", "#DD0000"],
+        ["C", "Oct 13, 2015"],
+        ["Event E", "Oct 14, 2015"]
+    ],
+    "eras" : [
+        ["Era 1", "12pm Oct 8, 2015", "3am Oct 12, 2015", "#CD3F85"],
+        ["Era 2", "8am Oct 12, 2015", "12am Oct 15, 2015", "#C0C0FF"]
+    ]
 }
 ```
