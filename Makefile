@@ -13,66 +13,51 @@ E = \033[0m
 P = \033[95m
 R = \033[31m
 
-.PHONY : help checklist clean condaenv docker format install interrogate lines lint tests type
+.PHONY : help clean format install lint
 
 all: install
 
 help:
 	@echo "Please use 'make $(R)<target>$(E)' where $(R)<target>$(E) is one of:"
-	@echo "  $(R) clean $(E)  \t  to recursively remove build, run, and bitecode files/dirs."
-	@echo "  $(R) format $(E)  \t  to recursively apply PEP8 formatting through the $(P)Black$(E) cli tool."
-	@echo "  $(R) install $(E)  \t  to $(D)poetry install$(E) this package into the project's virtual environment."
-	@echo "  $(R) lint $(E)  \t  to lint the code though $(P)Pylint$(E)."
-	@echo "  $(R) tests $(E)  \t  to run tests with the $(P)pytest$(E) package."
-	@echo "  $(R) type $(E)  \t  to run type checking with the $(P)mypy$(E) package."
+	@echo "  $(R) build $(E)  \t  to build wheel and source distribution with $(P)Hatch$(E)."
+	@echo "  $(R) clean $(E)  \t  to recursively remove build, run and bitecode files/dirs."
+	@echo "  $(R) format $(E)  \t  to check and format code with $(P)Ruff$(E) through $(P)Hatch$(E)."
+	@echo "  $(R) install $(E)  \t  to $(C)pip install$(E) this package into the current environment."
+	@echo "  $(R) lint $(E)  \t  to lint-check the code with $(P)Ruff$(E)."
 
 build:
 	@echo "Re-building wheel and dist"
 	@rm -rf dist
-	@poetry build
+	@hatch build --clean
 	@echo "Created build is located in the $(C)dist$(E) folder."
 
 clean:
-	@echo "Cleaning up documentation pages."
-	@rm -rf doc_build
 	@echo "Cleaning up distutils remains."
 	@rm -rf build
 	@rm -rf dist
-	@rm -rf pyhdtoolkit.egg-info
+	@rm -rf pytimeline.egg-info
 	@rm -rf .eggs
 	@echo "Cleaning up bitecode files and python cache."
 	@find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
-	@echo "Cleaning up pytest cache & test artifacts."
-	@find . -type d -name '*.pytest_cache' -exec rm -rf {} + -o -type f -name '*.pytest_cache' -exec rm -rf {} +
-	@find . -type f -name 'fc.*' -delete -o -type f -name 'fort.*' -delete
-	@echo "Cleaning up mypy cache."
-	@find . -type d -name "*.mypy_cache" -exec rm -rf {} +
-	@echo "Cleaning up coverage reports."
-	@find . -type f -name '.coverage*' -exec rm -rf {} + -o -type f -name 'coverage.xml' -delete
+	@echo "Cleaning up Jupyter notebooks cache."
+	@find . -type d -name "*.ipynb_checkpoints" -exec rm -rf {} +
 	@echo "All cleaned up!\n"
 
 format:
-	@echo "Sorting imports and formatting code to PEP8, default line length is 110 characters."
-	@poetry run isort . && black .
+	@echo "Checking code with Ruff through Hatch."
+	@hatch fmt
 
 install: format clean
-	@echo "Installing through $(D)Poetry$(E), with dev dependencies but no extras."
-	@poetry install -v
+	@echo "Installing (editable) with $(D)pip$(E) in the current environment."
+	@python -m pip install --editable . -v
 
 lint: format
-	@echo "Linting code"
-	@poetry run pylint pyhdtoolkit/
-
-tests: format clean
-	@poetry run pytest --no-flaky-report # -p no:sugar
-	@make clean
-
-type: format
-	@echo "Checking code typing with mypy, ignore $(C)pyhdtoolkit/scripts$(E)"
-	@poetry run mypy --pretty --no-strict-optional --show-error-codes --warn-redundant-casts --ignore-missing-imports --follow-imports skip pyhdtoolkit/scripts/
-	@make clean
+	@echo "Checking code with Ruff through Hatch."
+	@hatch fmt
 
 # Catch-all unknow targets without returning an error. This is a POSIX-compliant syntax.
 .DEFAULT:
-	@echo "Make caught an invalid target! See help output below for available targets."
+	@echo "Make caught an invalid target."
+	@echo "See help output below for available targets."
+	@echo ""
 	@make help
