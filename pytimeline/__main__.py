@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import click
-
 from loguru import logger
 
 from pytimeline.structures import Timeline
