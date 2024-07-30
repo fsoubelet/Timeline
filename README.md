@@ -17,6 +17,7 @@
 ## Install
 
 The package is compatible with `Python 3.9+` and can be installed in your current environment with `pip`:
+
 ```bash
 python -m pip install pytimeline
 ```
@@ -32,9 +33,8 @@ Usage: python -m pytimeline [OPTIONS]
 Options:
   --inputfile PATH                Path to the input JSON file with the
                                   timeline data.  [required]
-  --outputdir DIRECTORY           Path to the directory in which to write the
-                                  output SVG file. If not provided, will
-                                  pickthe directory of the input file.
+  --outputfile PATH               Path at which to write the output SVG file.
+                                  [default: timeline.svg]
   --logging [trace|debug|info|warning|error|critical]
                                   Sets the logging level.  [default: info]
   --help                          Show this message and exit.
