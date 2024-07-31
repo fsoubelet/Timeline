@@ -47,6 +47,10 @@ dev = [
     "ruff >= 0.5",
 ]
 
+[project.scripts]
+timeline = "pytimeline.__main__:main"
+pytimeline = "pytimeline.__main__:main"
+
 [project.urls]
 homepage = "https://github.com/fsoubelet/Timeline"
 repository = "https://github.com/fsoubelet/Timeline"
